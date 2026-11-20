@@ -3,643 +3,665 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sổ Tay Tiếng Trung (v23)</title>
+<title>Sổ Tay Tiếng Trung (v25)</title>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  body { background-color: #f3f4f6; color: #1f2937; padding-bottom: 40px; }
-  .header { background: linear-gradient(135deg, #dc2626, #991b1b); color: white; padding: 14px 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-  .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
-  .header p { font-size: 12px; opacity: 0.9; }
-  .nav-bar { display: flex; background: white; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-  .nav-btn { flex: 1; padding: 12px 4px; border: none; background: none; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
-  .nav-btn.active { color: #dc2626; border-bottom-color: #dc2626; background-color: #fef2f2; }
-  .container { max-width: 600px; margin: 0 auto; padding: 12px; }
+  :root { --primary: #c62828; --primary-dark: #8e0000; --bg: #f4f6f8; --card: #ffffff; --text: #212121; --sub: #616161; --accent: #1565c0; }
+  * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; padding: 0; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+  header { background: var(--primary); color: #fff; padding: 14px 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  header h1 { margin: 0; font-size: 19px; font-weight: 700; }
+  header p { margin: 4px 0 0; font-size: 12px; opacity: 0.9; }
+  
+  nav { display: flex; overflow-x: auto; background: #fff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  nav::-webkit-scrollbar { display: none; }
+  nav button { flex: 1; min-width: 72px; padding: 11px 6px; border: none; background: none; font-size: 13px; font-weight: 600; color: var(--sub); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff5f5; }
+  
+  .container { max-width: 680px; margin: 0 auto; padding: 12px; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
-  .card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-  .btn:active { opacity: 0.8; }
-  .btn-primary { background-color: #dc2626; color: white; width: 100%; }
-  .btn-blue { background-color: #2563eb; color: white; width: 100%; }
-  .btn-green { background-color: #16a34a; color: white; }
-  .btn-gray { background-color: #e5e7eb; color: #374151; }
-  .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
-  .input-box, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; margin-bottom: 10px; background: white; }
-  .pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
+  
+  .card { background: var(--card); border-radius: 10px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; }
   .pills::-webkit-scrollbar { display: none; }
-  .pill { padding: 6px 12px; border-radius: 20px; background: white; border: 1px solid #d1d5db; font-size: 12px; font-weight: 600; color: #4b5563; white-space: nowrap; cursor: pointer; }
-  .pill.active { background: #dc2626; color: white; border-color: #dc2626; }
-  .vocab-item { background: white; border-radius: 10px; padding: 12px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; }
-  .vocab-hanzi { font-size: 20px; font-weight: 700; color: #111827; }
-  .vocab-pinyin { font-size: 13px; color: #dc2626; font-weight: 500; margin: 2px 0; }
-  .vocab-meaning { font-size: 14px; color: #374151; }
-  .vocab-tag { display: inline-block; font-size: 11px; background: #f3f4f6; color: #6b7280; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
-  .audio-btns { display: flex; gap: 6px; }
-  .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e5e7eb; background: #f9fafb; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .icon-btn:active { background: #fee2e2; border-color: #dc2626; }
-  /* Accordion Bài đọc */
-  .story-card { background: white; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #e5e7eb; }
-  .story-header { padding: 12px 14px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-  .story-header:active { background: #f9fafb; }
-  .story-title { font-size: 15px; font-weight: 700; color: #111827; }
-  .story-meta { font-size: 12px; color: #6b7280; margin-top: 3px; }
-  .story-body { display: none; padding: 12px 14px; border-top: 1px solid #f3f4f6; background: #fafafa; }
+  .pill { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: #fff; font-size: 13px; font-weight: 600; color: var(--sub); cursor: pointer; white-space: nowrap; }
+  .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  
+  input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; margin-bottom: 10px; background: #fff; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; color: #fff; background: var(--primary); width: 100%; }
+  .btn-blue { background: var(--accent); }
+  .btn-green { background: #2e7d32; }
+  .btn-gray { background: #546e7a; }
+  .btn-sm { padding: 6px 10px; font-size: 12px; width: auto; }
+  
+  .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+  .hanzi-line { font-size: 20px; font-weight: 700; color: #111; }
+  .hv-tag { font-size: 14px; font-weight: 600; color: #d84315; }
+  .pinyin-line { font-size: 14px; color: var(--accent); font-weight: 500; margin: 2px 0; }
+  .meaning-line { font-size: 14px; color: #333; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 4px; background: #eceff1; color: #455a64; margin-top: 4px; margin-right: 4px; }
+  .actions { display: flex; flex-direction: column; gap: 6px; }
+  .icon-btn { border: 1px solid #ddd; background: #fafafa; border-radius: 6px; padding: 6px 9px; font-size: 14px; cursor: pointer; }
+  
+  /* Tab Luyện viết */
+  .writer-box { display: flex; flex-direction: column; align-items: center; background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .char-selector { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; }
+  .char-chip { padding: 8px 14px; font-size: 20px; font-weight: bold; border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; }
+  .char-chip.active { border-color: var(--primary); background: #ffebee; color: var(--primary); }
+  #character-target-div { width: 260px; height: 260px; border: 2px solid #c62828; border-radius: 8px; background-color: #fff; background-image: linear-gradient(to right, transparent 49.5%, #ffcdd2 49.5%, #ffcdd2 50.5%, transparent 50.5%), linear-gradient(to bottom, transparent 49.5%, #ffcdd2 49.5%, #ffcdd2 50.5%, transparent 50.5%); margin: 10px 0; touch-action: none; }
+  .writer-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 320px; margin-top: 10px; }
+  
+  /* Bài đọc Accordion */
+  .story-card { background: #fff; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
+  .story-header { padding: 13px 14px; font-weight: 700; font-size: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; }
+  .story-body { display: none; padding: 12px 14px; border-top: 1px solid #eee; background: #fafafa; }
   .story-body.open { display: block; }
-  .sentence-block { background: white; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #dc2626; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
-  .s-hanzi { font-size: 17px; font-weight: 700; color: #111827; line-height: 1.4; }
-  .s-pinyin { font-size: 13px; color: #2563eb; margin: 3px 0; line-height: 1.4; }
-  .s-vi { font-size: 13px; color: #4b5563; line-height: 1.4; }
+  .sentence-block { background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--primary); }
+  .s-hanzi { font-size: 17px; font-weight: 700; color: #111; }
+  .s-pinyin { font-size: 13px; color: var(--accent); margin: 3px 0; }
+  .s-vi { font-size: 13px; color: #444; }
+  
   /* Flashcard */
-  .flashcard { background: white; border-radius: 16px; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; margin: 12px 0; border: 2px solid #fee2e2; }
-  .fc-hanzi { font-size: 36px; font-weight: 700; color: #111827; margin-bottom: 8px; }
-  .fc-pinyin { font-size: 18px; color: #dc2626; font-weight: 600; margin-bottom: 8px; }
-  .fc-meaning { font-size: 18px; color: #1f2937; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 10px 18px; border-radius: 20px; font-size: 13px; z-index: 999; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+  .flashcard { background: #fff; border-radius: 14px; min-height: 210px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; margin: 12px 0; }
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: #fff; padding: 10px 18px; border-radius: 20px; font-size: 13px; display: none; z-index: 999; }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Sổ Tay Tiếng Trung (v23)</h1>
-  <p>Lộ trình 2 năm - Chuyên ngành Kỹ thuật M&E</p>
-</div>
+<header>
+  <h1>Sổ Tay Tiếng Trung (v25)</h1>
+  <p>Lộ trình 2 năm • Hán Việt & Luyện Viết Nét Chữ</p>
+</header>
 
-<div class="nav-bar">
-  <button class="nav-btn active" onclick="switchTab('tab-vocab', this)">📚 Kho từ</button>
-  <button class="nav-btn" onclick="switchTab('tab-read', this)">📖 Bài đọc</button>
-  <button class="nav-btn" onclick="switchTab('tab-add', this)">➕ Thêm</button>
-  <button class="nav-btn" onclick="switchTab('tab-practice', this)">🎯 Luyện</button>
-  <button class="nav-btn" onclick="switchTab('tab-backup', this)">💾 Lưu</button>
-</div>
+<nav id="main-nav">
+  <button class="active" onclick="switchTab('vocab', this)">📚 Kho từ</button>
+  <button onclick="switchTab('write', this)">✍️ Tập viết</button>
+  <button onclick="switchTab('read', this)">📖 Bài đọc</button>
+  <button onclick="switchTab('practice', this)">🎯 Luyện</button>
+  <button onclick="switchTab('add', this)">➕ Thêm</button>
+  <button onclick="switchTab('backup', this)">💾 Lưu</button>
+</nav>
 
 <div class="container">
   <!-- TAB 1: KHO TỪ -->
   <div id="tab-vocab" class="tab-content active">
-    <input type="text" id="search-input" class="input-box" placeholder="🔍 Tìm chữ Hán, Pinyin hoặc nghĩa..." oninput="renderVocab()">
-    <div id="lesson-pills" class="pills"></div>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:13px; color:#6b7280;">
-      <span id="vocab-count">Tổng cộng: 0 từ</span>
-      <button class="btn btn-sm btn-gray" onclick="resetDefaultData()">🔄 Nạp lại 40 từ gốc</button>
-    </div>
+    <div class="pills" id="lesson-pills"></div>
+    <input type="text" id="search-input" placeholder="🔍 Tìm chữ Hán, Hán Việt, Pinyin hoặc nghĩa..." oninput="renderVocab()">
+    <div id="vocab-count" style="font-size:12px; color:#666; margin-bottom:8px;"></div>
     <div id="vocab-list"></div>
   </div>
 
-  <!-- TAB 2: BÀI ĐỌC -->
-  <div id="tab-read" class="tab-content">
-    <input type="text" id="story-search" class="input-box" placeholder="🔍 Tìm tiêu đề hoặc nội dung bài đọc..." oninput="renderStories()">
-    <div id="story-pills" class="pills"></div>
-    <div style="display:flex; gap:8px; margin-bottom:10px;">
-      <button class="btn btn-sm btn-gray" style="flex:1;" onclick="toggleAllStories(true)">📂 Mở tất cả</button>
-      <button class="btn btn-sm btn-gray" style="flex:1;" onclick="toggleAllStories(false)">📁 Thu gọn tất cả</button>
+  <!-- TAB 2: TẬP VIẾT HÁN TỰ -->
+  <div id="tab-write" class="tab-content">
+    <div class="card">
+      <label style="font-size:13px; font-weight:600;">Chọn bài học hoặc nhập chữ muốn tập viết:</label>
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <select id="write-lesson-select" onchange="loadWriteLesson()" style="margin-bottom:0;"></select>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <input type="text" id="custom-write-input" placeholder="Hoặc gõ chữ Hán bất kỳ (vd: 你好, 电工)..." style="margin-bottom:0;">
+        <button class="btn btn-blue btn-sm" onclick="setCustomWriteWord()">Tập viết</button>
+      </div>
     </div>
-    <div id="story-list"></div>
+
+    <div class="writer-box">
+      <div id="write-word-info" style="text-align:center; margin-bottom:8px;">
+        <div id="write-word-title" style="font-size:20px; font-weight:700; color:var(--primary);"></div>
+        <div id="write-word-sub" style="font-size:13px; color:#555;"></div>
+      </div>
+      <div class="char-selector" id="char-selector"></div>
+      <div id="character-target-div"></div>
+      <div id="quiz-status" style="font-size:13px; font-weight:600; color:var(--accent); min-height:20px;"></div>
+      <div class="writer-controls">
+        <button class="btn btn-blue" onclick="animateStroke()">🎬 Xem thứ tự nét</button>
+        <button class="btn btn-green" onclick="startQuiz()">✍️ Tự viết kiểm tra</button>
+        <button class="btn btn-gray" onclick="speakCurrentWriteWord()">🔊 Nghe phát âm</button>
+        <button class="btn" onclick="nextWriteWord()">⏭ Từ tiếp theo</button>
+      </div>
+    </div>
   </div>
 
-  <!-- TAB 3: THÊM MỚI -->
-  <div id="tab-add" class="tab-content">
-    <div class="card">
-      <h3 style="font-size:16px; margin-bottom:10px; color:#dc2626;">➕ Nhập từ vựng hàng loạt</h3>
-      <p style="font-size:12px; color:#6b7280; margin-bottom:8px;">Định dạng: <b>Chữ Hán | Pinyin | Nghĩa | Chủ đề | Bài học</b></p>
-      <textarea id="bulk-vocab" rows="5" placeholder="Ví dụ:&#10;电工 | diàngōng | Thợ điện | Kỹ thuật | Bài 5"></textarea>
-      <button class="btn btn-primary" onclick="addBulkVocab()">Lưu danh sách từ vựng</button>
+  <!-- TAB 3: BÀI ĐỌC -->
+  <div id="tab-read" class="tab-content">
+    <div class="pills" id="read-pills"></div>
+    <div style="display:flex; gap:8px; margin-bottom:10px;">
+      <button class="btn btn-gray btn-sm" onclick="toggleAllStories(true)">📂 Mở tất cả</button>
+      <button class="btn btn-gray btn-sm" onclick="toggleAllStories(false)">📁 Thu gọn tất cả</button>
     </div>
-
-    <div class="card">
-      <h3 style="font-size:16px; margin-bottom:10px; color:#2563eb;">📖 Thêm bài đọc 3 hàng mới</h3>
-      <input type="text" id="new-story-title" placeholder="Tiêu đề bài đọc (VD: Chuyện 7: Sửa camera)">
-      <input type="text" id="new-story-lesson" placeholder="Nhãn bài học (VD: Bài 5)">
-      <p style="font-size:12px; color:#6b7280; margin-bottom:6px;">Mỗi câu 1 dòng: <b>Chữ Hán | Pinyin | Nghĩa tiếng Việt</b></p>
-      <textarea id="new-story-content" rows="5" placeholder="你好 | Nǐ hǎo | Xin chào&#10;我是电工 | Wǒ shì diàngōng | Tôi là thợ điện"></textarea>
-      <button class="btn btn-blue" onclick="addNewStory()">Lưu bài đọc mới</button>
-    </div>
+    <div id="story-list"></div>
   </div>
 
   <!-- TAB 4: LUYỆN TẬP -->
   <div id="tab-practice" class="tab-content">
     <div class="card">
-      <label style="font-size:13px; font-weight:600; display:block; margin-bottom:6px;">Chọn bài học muốn ôn tập:</label>
-      <select id="practice-lesson" onchange="initPractice()"></select>
-      <div style="display:flex; gap:8px;">
-        <button id="mode-fc-btn" class="btn btn-sm btn-primary" style="flex:1;" onclick="setPracticeMode('fc')">🗂 Flashcard</button>
-        <button id="mode-listen-btn" class="btn btn-sm btn-gray" style="flex:1;" onclick="setPracticeMode('listen')">🎧 Nghe đoán nghĩa</button>
+      <select id="practice-lesson" onchange="initPractice()" style="margin-bottom:0;"></select>
+    </div>
+    <div class="flashcard" onclick="flipCard()">
+      <div id="fc-front">
+        <div id="fc-hanzi" style="font-size:38px; font-weight:700;"></div>
+        <div id="fc-hv" style="font-size:16px; color:#d84315; font-weight:600; margin-top:6px;"></div>
+        <div style="font-size:12px; color:#888; margin-top:16px;">(Chạm để lật thẻ)</div>
+      </div>
+      <div id="fc-back" style="display:none;">
+        <div id="fc-pinyin" style="font-size:20px; color:var(--accent); font-weight:700;"></div>
+        <div id="fc-meaning" style="font-size:18px; margin-top:8px; font-weight:600;"></div>
       </div>
     </div>
-
-    <div id="practice-area"></div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-blue" onclick="speakPractice()">🔊 Nghe</button>
+      <button class="btn" onclick="nextCard()">⏭ Thẻ tiếp</button>
+    </div>
   </div>
 
-  <!-- TAB 5: SAO LƯU -->
+  <!-- TAB 5: THÊM MỚI -->
+  <div id="tab-add" class="tab-content">
+    <div class="card">
+      <h3 style="margin-top:0; font-size:16px;">Thêm từ vựng (Hỗ trợ Hán Việt)</h3>
+      <p style="font-size:12px; color:#666;">Định dạng: <b>Chữ Hán | Hán Việt | Pinyin | Nghĩa | Chủ đề | Bài học</b></p>
+      <textarea id="bulk-vocab" rows="5" placeholder="Ví dụ:&#10;电工 | ĐIỆN CÔNG | diàngōng | Thợ điện | Kỹ thuật | Bài 1"></textarea>
+      <button class="btn" onclick="importBulkVocab()">➕ Thêm vào kho từ</button>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0; font-size:16px;">Thêm bài đọc mới (3 hàng)</h3>
+      <input type="text" id="new-story-title" placeholder="Tiêu đề bài đọc (vd: Chuyện 11: Lắp tủ điện)">
+      <input type="text" id="new-story-lesson" placeholder="Nhãn bài học (vd: Bài 5)">
+      <textarea id="new-story-body" rows="5" placeholder="Mỗi câu 1 dòng: Chữ Hán | Pinyin | Nghĩa tiếng Việt"></textarea>
+      <button class="btn btn-blue" onclick="addStory()">📖 Lưu bài đọc</button>
+    </div>
+  </div>
+
+  <!-- TAB 6: SAO LƯU & KHÔI PHỤC -->
   <div id="tab-backup" class="tab-content">
     <div class="card">
-      <h3 style="font-size:16px; margin-bottom:8px;">💾 Sao lưu & Khôi phục dữ liệu</h3>
-      <p style="font-size:13px; color:#4b5563; margin-bottom:12px;">Xuất toàn bộ từ vựng và bài đọc ra tệp .json để lưu trữ an toàn suốt 2 năm học.</p>
-      <button class="btn btn-green" style="width:100%; margin-bottom:12px;" onclick="exportData()">⬇️ Tải file sao lưu (.json)</button>
-      <hr style="border:none; border-top:1px solid #e5e7eb; margin:12px 0;">
-      <p style="font-size:13px; color:#4b5563; margin-bottom:8px;">Khôi phục dữ liệu từ file .json đã lưu:</p>
-      <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+      <h3 style="margin-top:0; font-size:16px;">Sao lưu & Khôi phục dữ liệu (v24 / v25)</h3>
+      <p style="font-size:13px; color:#555;">Bạn có thể tải tệp sao lưu <b>.json</b> từ bản v24 vào đây, ứng dụng sẽ giữ nguyên toàn bộ từ vựng & bài đọc của bạn và tự động bổ sung âm Hán Việt.</p>
+      <button class="btn btn-green" onclick="exportBackup()" style="margin-bottom:10px;">⬇️ Xuất file sao lưu (.json)</button>
+      <input type="file" id="import-file" accept=".json" onchange="importBackup(event)">
+      <button class="btn btn-gray" onclick="resetDefaultData()" style="margin-top:10px;">🔄 Khôi phục dữ liệu mẫu mặc định</button>
     </div>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast"></div>
 
 <script>
+const HV_DICT = {
+  "你好": "NHĨ HẢO", "您好": "NÍN HẢO", "谢谢": "TẠ TẠ", "不客气": "BẤT KHÁCH KHÍ",
+  "对不起": "ĐỐI BẤT KHỞI", "没关系": "MỘT QUAN HỆ", "再见": "TÁI KIẾN", "请问": "THỈNH VẤN",
+  "我叫": "NGÃ KHIẾU", "很高兴认识你": "HNg CAO HỨNG NHẬN THỨC NHĨ",
+  "电工": "ĐIỆN CÔNG", "空调": "KHÔNG ĐIỀU", "监控": "GIÁM KHỐNG", "网络": "VÕNG LẠC",
+  "安装": "AN TRANG", "维修": "DUY TU", "电线": "ĐIỆN TUYẾN", "网线": "VÕNG TUYẾN",
+  "没电了": "MỘT ĐIỆN LIỄU", "断网了": "ĐOẠN VÕNG LIỄU",
+  "吃饭了吗": "CẬT PHẠN LIỄU MA", "喝水": "HÁT THỦY", "休息一下": "HƯU TỨC NHẤT HẠ",
+  "下班": "HẠ BAN", "帮我一下": "BANG NGÃ NHẤT HẠ", "螺丝刀": "LA TI ĐAO",
+  "钳子": "KIỀM TỬ", "电钻": "ĐIỆN TOẢN", "万用表": "VẠN DỤNG BIỂU", "梯子": "THÊ TỬ",
+  "现在几点": "HIỆN TẠI KỶ ĐIỂM", "今天": "KIM THIÊN", "明天": "MINH THIÊN",
+  "多少钱": "ĐA THIỂU TIỀN", "太贵了": "THÁI QUÝ LIỄU", "电压": "ĐIỆN ÁP",
+  "电流": "ĐIỆN LƯU", "温度": "ÔN ĐỘ", "冷媒": "LÃNH MÔI", "信号": "TÍN HIỆU"
+};
+
 const DEFAULT_VOCAB = [
-  {h:"你好", p:"nǐ hǎo", m:"Xin chào (thông thường)", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"您好", p:"nín hǎo", m:"Xin chào (kính trọng với sếp, khách)", c:"Công sở", l:"Bài 1"},
-  {h:"谢谢", p:"xièxie", m:"Cảm ơn", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"不客气", p:"bú kèqi", m:"Đừng khách sáo / Không có gì", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"对不起", p:"duìbuqǐ", m:"Xin lỗi", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"没关系", p:"méi guānxi", m:"Không sao đâu", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"再见", p:"zàijiàn", m:"Tạm biệt", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"请问", p:"qǐngwèn", m:"Xin hỏi", c:"Công sở", l:"Bài 1"},
-  {h:"我叫...", p:"wǒ jiào...", m:"Tôi tên là...", c:"Giao tiếp cơ bản", l:"Bài 1"},
-  {h:"很高兴认识你", p:"hěn gāoxìng rènshi nǐ", m:"Rất vui được làm quen với bạn", c:"Công sở", l:"Bài 1"},
-  {h:"电工", p:"diàngōng", m:"Thợ điện / Kỹ thuật điện", c:"Kỹ thuật điện", l:"Bài 2"},
-  {h:"空调", p:"kōngtiáo", m:"Máy lạnh / Điều hòa", c:"Điện lạnh", l:"Bài 2"},
-  {h:"监控", p:"jiānkòng", m:"Hệ thống camera giám sát", c:"Camera & Mạng", l:"Bài 2"},
-  {h:"网络", p:"wǎngluò", m:"Mạng internet / Hệ thống mạng", c:"Camera & Mạng", l:"Bài 2"},
-  {h:"安装", p:"ānzhuāng", m:"Lắp đặt", c:"Công việc chung", l:"Bài 2"},
-  {h:"维修", p:"wéixiū", m:"Sửa chữa / Bảo trì", c:"Công việc chung", l:"Bài 2"},
-  {h:"电线", p:"diànxiàn", m:"Dây điện", c:"Kỹ thuật điện", l:"Bài 2"},
-  {h:"网线", p:"wǎngxiàn", m:"Dây mạng", c:"Camera & Mạng", l:"Bài 2"},
-  {h:"没电了", p:"méi diàn le", m:"Mất điện rồi / Hết pin rồi", c:"Sự cố", l:"Bài 2"},
-  {h:"断网了", p:"duàn wǎng le", m:"Mất mạng rồi / Rớt mạng rồi", c:"Sự cố", l:"Bài 2"},
-  {h:"吃饭了吗", p:"chīfàn le ma", m:"Ăn cơm chưa", c:"Giao tiếp hàng ngày", l:"Bài 3"},
-  {h:"喝水", p:"hē shuǐ", m:"Uống nước", c:"Giao tiếp hàng ngày", l:"Bài 3"},
-  {h:"休息一下", p:"xiūxi yíxià", m:"Nghỉ ngơi một chút", c:"Giao tiếp hàng ngày", l:"Bài 3"},
-  {h:"下班", p:"xiàbān", m:"Tan làm / Hết giờ làm việc", c:"Giao tiếp hàng ngày", l:"Bài 3"},
-  {h:"帮我一下", p:"bāng wǒ yíxià", m:"Giúp tôi một chút", c:"Giao tiếp hàng ngày", l:"Bài 3"},
-  {h:"螺丝刀", p:"luósīdāo", m:"Tua vít (Tô vít)", c:"Dụng cụ kỹ thuật", l:"Bài 3"},
-  {h:"钳子", p:"qiánzi", m:"Kìm (kìm điện, kìm cắt)", c:"Dụng cụ kỹ thuật", l:"Bài 3"},
-  {h:"电钻", p:"diànzuàn", m:"Máy khoan điện", c:"Dụng cụ kỹ thuật", l:"Bài 3"},
-  {h:"万用表", p:"wànyòngbiǎo", m:"Đồng hồ vạn năng", c:"Dụng cụ kỹ thuật", l:"Bài 3"},
-  {h:"梯子", p:"tīzi", m:"Cái thang", c:"Dụng cụ kỹ thuật", l:"Bài 3"},
-  {h:"现在几点", p:"xiànzài jǐ diǎn", m:"Bây giờ mấy giờ rồi", c:"Giao tiếp hàng ngày", l:"Bài 4"},
-  {h:"今天", p:"jīntiān", m:"Hôm nay", c:"Giao tiếp hàng ngày", l:"Bài 4"},
-  {h:"明天", p:"míngtiān", m:"Ngày mai", c:"Giao tiếp hàng ngày", l:"Bài 4"},
-  {h:"多少钱", p:"duōshao qián", m:"Bao nhiêu tiền", c:"Giao tiếp hàng ngày", l:"Bài 4"},
-  {h:"太贵了", p:"tài guì le", m:"Đắt quá rồi", c:"Giao tiếp hàng ngày", l:"Bài 4"},
-  {h:"电压", p:"diànyā", m:"Điện áp (Vôn)", c:"Kỹ thuật điện", l:"Bài 4"},
-  {h:"电流", p:"diànliú", m:"Dòng điện (Ampe)", c:"Kỹ thuật điện", l:"Bài 4"},
-  {h:"温度", p:"wēndù", m:"Nhiệt độ", c:"Điện lạnh", l:"Bài 4"},
-  {h:"冷媒", p:"lěngméi", m:"Gas lạnh / Môi chất lạnh", c:"Điện lạnh", l:"Bài 4"},
-  {h:"信号", p:"xìnhào", m:"Tín hiệu (mạng, camera)", c:"Camera & Mạng", l:"Bài 4"}
+  { h: "你好", hv: "NHĨ HẢO", p: "nǐ hǎo", m: "Xin chào", c: "Giao tiếp", l: "Bài 1" },
+  { h: "您好", hv: "NÍN HẢO", p: "nín hǎo", m: "Xin chào (kính trọng)", c: "Công sở", l: "Bài 1" },
+  { h: "谢谢", hv: "TẠ TẠ", p: "xièxie", m: "Cảm ơn", c: "Giao tiếp", l: "Bài 1" },
+  { h: "不客气", hv: "BẤT KHÁCH KHÍ", p: "bú kèqi", m: "Đừng khách sáo", c: "Giao tiếp", l: "Bài 1" },
+  { h: "对不起", hv: "ĐỐI BẤT KHỞI", p: "duìbuqǐ", m: "Xin lỗi", c: "Giao tiếp", l: "Bài 1" },
+  { h: "没关系", hv: "MỘT QUAN HỆ", p: "méi guānxi", m: "Không sao đâu", c: "Giao tiếp", l: "Bài 1" },
+  { h: "再见", hv: "TÁI KIẾN", p: "zàijiàn", m: "Tạm biệt", c: "Giao tiếp", l: "Bài 1" },
+  { h: "请问", hv: "THỈNH VẤN", p: "qǐngwèn", m: "Xin hỏi", c: "Công sở", l: "Bài 1" },
+  { h: "我叫", hv: "NGÃ KHIẾU", p: "wǒ jiào", m: "Tôi tên là", c: "Giao tiếp", l: "Bài 1" },
+  { h: "很高兴认识你", hv: "HNg CAO HỨNG NHẬN THỨC NHĨ", p: "hěn gāoxìng rènshi nǐ", m: "Rất vui được làm quen với bạn", c: "Công sở", l: "Bài 1" },
+  { h: "电工", hv: "ĐIỆN CÔNG", p: "diàngōng", m: "Thợ điện / Kỹ thuật điện", c: "Kỹ thuật", l: "Bài 2" },
+  { h: "空调", hv: "KHÔNG ĐIỀU", p: "kōngtiáo", m: "Máy lạnh / Điều hòa", c: "Điện lạnh", l: "Bài 2" },
+  { h: "监控", hv: "GIÁM KHỐNG", p: "jiānkòng", m: "Camera giám sát", c: "Camera & Mạng", l: "Bài 2" },
+  { h: "网络", hv: "VÕNG LẠC", p: "wǎngluò", m: "Mạng internet", c: "Camera & Mạng", l: "Bài 2" },
+  { h: "安装", hv: "AN TRANG", p: "ānzhuāng", m: "Lắp đặt", c: "Công việc", l: "Bài 2" },
+  { h: "维修", hv: "DUY TU", p: "wéixiū", m: "Sửa chữa / Bảo trì", c: "Công việc", l: "Bài 2" },
+  { h: "电线", hv: "ĐIỆN TUYẾN", p: "diànxiàn", m: "Dây điện", c: "Kỹ thuật", l: "Bài 2" },
+  { h: "网线", hv: "VÕNG TUYẾN", p: "wǎngxiàn", m: "Dây mạng", c: "Camera & Mạng", l: "Bài 2" },
+  { h: "没电了", hv: "MỘT ĐIỆN LIỄU", p: "méi diàn le", m: "Mất điện rồi", c: "Sự cố", l: "Bài 2" },
+  { h: "断网了", hv: "ĐOẠN VÕNG LIỄU", p: "duàn wǎng le", m: "Mất mạng rồi", c: "Sự cố", l: "Bài 2" },
+  { h: "吃饭了吗", hv: "CẬT PHẠN LIỄU MA", p: "chīfàn le ma", m: "Ăn cơm chưa", c: "Đời sống", l: "Bài 3" },
+  { h: "喝水", hv: "HÁT THỦY", p: "hē shuǐ", m: "Uống nước", c: "Đời sống", l: "Bài 3" },
+  { h: "休息一下", hv: "HƯU TỨC NHẤT HẠ", p: "xiūxi yíxià", m: "Nghỉ ngơi một chút", c: "Đời sống", l: "Bài 3" },
+  { h: "下班", hv: "HẠ BAN", p: "xiàbān", m: "Tan làm", c: "Công việc", l: "Bài 3" },
+  { h: "帮我一下", hv: "BANG NGÃ NHẤT HẠ", p: "bāng wǒ yíxià", m: "Giúp tôi một chút", c: "Giao tiếp", l: "Bài 3" },
+  { h: "螺丝刀", hv: "LA TI ĐAO", p: "luósīdāo", m: "Tua vít", c: "Dụng cụ", l: "Bài 3" },
+  { h: "钳子", hv: "KIỀM TỬ", p: "qiánzi", m: "Cái kìm", c: "Dụng cụ", l: "Bài 3" },
+  { h: "电钻", hv: "ĐIỆN TOẢN", p: "diànzuàn", m: "Máy khoan điện", c: "Dụng cụ", l: "Bài 3" },
+  { h: "万用表", hv: "VẠN DỤNG BIỂU", p: "wànyòngbiǎo", m: "Đồng hồ vạn năng", c: "Dụng cụ", l: "Bài 3" },
+  { h: "梯子", hv: "THÊ TỬ", p: "tīzi", m: "Cái thang", c: "Dụng cụ", l: "Bài 3" }
 ];
 
 const DEFAULT_STORIES = [
   {
-    id: 1,
-    title: "Chuyện 1: Ngày đầu nhận việc & Kiểm tra điều hòa",
+    title: "Chuyện 1: Ngày đầu nhận việc & Sửa điều hòa",
     lesson: "Bài 1-3",
     lines: [
-      {h:"您好，我叫阿明，我是新来的电工。", p:"Nín hǎo, wǒ jiào Ā Míng, wǒ shì xīn lái de diàngōng.", v:"Xin chào ngài, tôi tên A Minh, tôi là thợ điện mới đến."},
-      {h:"很高兴认识您！请问今天我们维修什么？", p:"Hěn gāoxìng rènshi nín! Qǐngwèn jīntiān wǒmen wéixiū shénme?", v:"Rất vui được quen biết ngài! Xin hỏi hôm nay chúng ta sửa chữa gì vậy?"},
-      {h:"办公室的空调没电了，你用万用表检查一下电线吧。", p:"Bàngōngshì de kōngtiáo méi diàn le, nǐ yòng wànyòngbiǎo jiǎnchá yíxià diànxiàn ba.", v:"Điều hòa ở văn phòng bị mất điện rồi, cậu dùng đồng hồ vạn năng kiểm tra dây điện chút nhé."},
-      {h:"请帮我一下，拿一下螺丝刀和钳子。", p:"Qǐng bāng wǒ yíxià, ná yíxià luósīdāo hé qiánzi.", v:"Vui lòng giúp tôi một chút, lấy giúp tôi tua vít và kìm."},
-      {h:"好的，电线在这里，小心一点。", p:"Hǎo de, diànxiàn zài zhèlǐ, xiǎoxīn yìdiǎn.", v:"Được rồi, dây điện ở đây, cẩn thận một chút nhé."}
+      { h: "您好，我是新来的电工。", p: "Nín hǎo, wǒ shì xīn lái de diàngōng.", v: "Xin chào ngài, tôi là thợ điện mới đến." },
+      { h: "你好，很高兴认识你！", p: "Nǐ hǎo, hěn gāoxìng rènshi nǐ!", v: "Xin chào, rất vui được làm quen với bạn!" },
+      { h: "请问，今天我们维修什么？", p: "Qǐngwèn, jīntiān wǒmen wéixiū shénme?", v: "Xin hỏi, hôm nay chúng ta sửa chữa gì vậy?" },
+      { h: "办公室的空调没电了。", p: "Bàngōngshì de kōngtiáo méi diàn le.", v: "Điều hòa ở văn phòng bị mất điện rồi." },
+      { h: "请帮我一下，拿一下万用表和螺丝刀。", p: "Qǐng bāng wǒ yíxià, ná yíxià wànyòngbiǎo hé luósīdāo.", v: "Vui lòng giúp tôi một chút, lấy giúp tôi đồng hồ vạn năng và tua vít." }
     ]
   },
   {
-    id: 2,
-    title: "Chuyện 2: Lắp đặt Camera & Xử lý sự cố mất mạng",
+    title: "Chuyện 2: Lắp đặt Camera & Mạng văn phòng",
     lesson: "Bài 1-3",
     lines: [
-      {h:"今天下午，我和同事一起去安装监控。", p:"Jīntiān xiàwǔ, wǒ hé tóngshì yìqǐ qù ānzhuāng jiānkòng.", v:"Chiều nay, tôi và đồng nghiệp cùng nhau đi lắp đặt camera."},
-      {h:"请帮我拿一下梯子、电钻和网线。", p:"Qǐng bāng wǒ ná yíxià tīzi, diànzuàn hé wǎngxiàn.", v:"Vui lòng giúp tôi lấy cái thang, máy khoan điện và dây mạng."},
-      {h:"不好了，办公室断网了，我们还要检查一下网络。", p:"Bù hǎo le, bàngōngshì duàn wǎng le, wǒmen hái yào jiǎnchá yíxià wǎngluò.", v:"Không ổn rồi, văn phòng bị mất mạng rồi, chúng ta còn phải kiểm tra mạng nữa."},
-      {h:"原来是网线插头没插好，现在网络正常了。", p:"Yuánlái shì wǎngxiàn chātóu méi chā hǎo, xiànzài wǎngluò zhèngcháng le.", v:"Hóa ra là đầu cắm dây mạng chưa cắm chặt, bây giờ mạng bình thường rồi."}
-    ]
-  },
-  {
-    id: 3,
-    title: "Chuyện 3: Giờ nghỉ trưa & Tan làm đi ăn cùng đồng nghiệp",
-    lesson: "Bài 1-3",
-    lines: [
-      {h:"中午十二点了，你吃饭了吗？", p:"Zhōngwǔ shí'èr diǎn le, nǐ chīfàn le ma?", v:"12 giờ trưa rồi, cậu ăn cơm chưa?"},
-      {h:"还没吃呢，我刚维修好空调，想先喝水休息一下。", p:"Hái méi chī ne, wǒ gāng wéixiū hǎo kōngtiáo, xiǎng xiān hē shuǐ xiūxi yíxià.", v:"Vẫn chưa ăn đâu, tôi vừa sửa xong điều hòa, muốn uống nước nghỉ ngơi một chút trước."},
-      {h:"下班了，我们一起去吃饭吧！", p:"Xiàbān le, wǒmen yìqǐ qù chīfàn ba!", v:"Tan làm rồi, chúng ta cùng nhau đi ăn cơm nhé!"},
-      {h:"谢谢你经常帮我！不客气，明天见，再见！", p:"Xièxie nǐ jīngcháng bāng wǒ! Bú kèqi, míngtiān jiàn, zàijiàn!", v:"Cảm ơn cậu thường xuyên giúp đỡ tôi! Đừng khách sáo, mai gặp nhé, tạm biệt!"}
-    ]
-  },
-  {
-    id: 4,
-    title: "Chuyện 4: Kiểm tra gas điều hòa & tín hiệu camera",
-    lesson: "Bài 4",
-    lines: [
-      {h:"请问，现在几点了？", p:"Qǐngwèn, xiànzài jǐ diǎn le?", v:"Xin hỏi, bây giờ mấy giờ rồi?"},
-      {h:"现在下午三点了，我们去检查冷媒和温度吧。", p:"Xiànzài xiàwǔ sān diǎn le, wǒmen qù jiǎnchá lěngméi hé wēndù ba.", v:"Bây giờ 3 giờ chiều rồi, chúng ta đi kiểm tra gas lạnh và nhiệt độ nhé."},
-      {h:"好的，这台空调的电压和电流都正常，但是冷媒不够了。", p:"Hǎo de, zhè tái kōngtiáo de diànyā hé diànliú dōu zhèngcháng, dànshì lěngméi bú gòu le.", v:"Được, điện áp và dòng điện của điều hòa này đều bình thường, nhưng gas lạnh không đủ rồi."},
-      {h:"今天加冷媒多少钱？", p:"Jīntiān jiā lěngméi duōshao qián?", v:"Hôm nay nạp gas lạnh bao nhiêu tiền?"},
-      {h:"不贵，明天我们还要顺便检查一下监控的信号。", p:"Bú guì, míngtiān wǒmen hái yào shùnbiàn jiǎnchá yíxià jiānkòng de xìnhào.", v:"Không đắt, ngày mai chúng ta còn phải tiện thể kiểm tra một chút tín hiệu của camera."}
+      { h: "今天下午我们去安装监控和网络。", p: "Jīntiān xiàwǔ wǒmen qù ānzhuāng jiānkòng hé wǎngluò.", v: "Chiều nay chúng ta đi lắp đặt camera và mạng." },
+      { h: "请帮我拿一下梯子、电钻和网线。", p: "Qǐng bāng wǒ ná yíxià tīzi, diànzuàn hé wǎngxiàn.", v: "Vui lòng giúp tôi lấy cái thang, máy khoan điện và dây mạng." },
+      { h: "不好了，办公室断网了！", p: "Bù hǎo le, bàngōngshì duàn wǎng le!", v: "Không hay rồi, văn phòng bị mất mạng rồi!" },
+      { h: "没关系，我们先喝水，休息一下再去检查。", p: "Méi guānxi, wǒmen xiān hē shuǐ, xiūxi yíxià zài qù jiǎnchá.", v: "Không sao đâu, chúng ta uống nước nghỉ một chút rồi đi kiểm tra." }
     ]
   }
 ];
 
-let vocabList = [];
-let storyList = [];
-let currentVocabLesson = "Tất cả";
-let currentStoryLesson = "Tất cả";
-let practiceMode = "fc";
-let practicePool = [];
-let practiceIdx = 0;
-let fcFlipped = false;
+let vocabData = JSON.parse(localStorage.getItem('cn_vocab_v25') || 'null') || JSON.parse(localStorage.getItem('cn_vocab_v24') || 'null') || DEFAULT_VOCAB;
+let storyData = JSON.parse(localStorage.getItem('cn_stories_v25') || 'null') || JSON.parse(localStorage.getItem('cn_stories_v24') || 'null') || DEFAULT_STORIES;
 
-function initApp() {
-  try {
-    const savedV = localStorage.getItem("cn_vocab_v23");
-    vocabList = savedV ? JSON.parse(savedV) : JSON.parse(JSON.stringify(DEFAULT_VOCAB));
-    if (!savedV) localStorage.setItem("cn_vocab_v23", JSON.stringify(vocabList));
-
-    const savedS = localStorage.getItem("cn_stories_v23");
-    storyList = savedS ? JSON.parse(savedS) : JSON.parse(JSON.stringify(DEFAULT_STORIES));
-    if (!savedS) localStorage.setItem("cn_stories_v23", JSON.stringify(storyList));
-  } catch (e) {
-    vocabList = JSON.parse(JSON.stringify(DEFAULT_VOCAB));
-    storyList = JSON.parse(JSON.stringify(DEFAULT_STORIES));
+// Tự động bổ sung Hán Việt nếu import từ bản cũ chưa có
+vocabData = vocabData.map(item => {
+  if (!item.hv) {
+    const cleanH = item.h.replace(/[.。…]/g, '');
+    item.hv = HV_DICT[cleanH] || "";
   }
-  renderVocabPills();
-  renderVocab();
-  renderStoryPills();
-  renderStories();
-  updatePracticeSelect();
+  return item;
+});
+saveData();
+
+let currentLesson = 'Tất cả';
+let currentReadLesson = 'Tất cả';
+let writeWordList = [];
+let currentWriteIdx = 0;
+let writerInstance = null;
+let practiceList = [];
+let practiceIdx = 0;
+
+function saveData() {
+  localStorage.setItem('cn_vocab_v25', JSON.stringify(vocabData));
+  localStorage.setItem('cn_stories_v25', JSON.stringify(storyData));
 }
 
 function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.display = "block";
-  setTimeout(() => { t.style.display = "none"; }, 2200);
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2200);
 }
 
 function switchTab(tabId, btn) {
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
-  document.getElementById(tabId).classList.add("active");
-  btn.classList.add("active");
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#main-nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  btn.classList.add('active');
   window.scrollTo(0, 0);
-  if (tabId === "tab-practice") {
-    updatePracticeSelect();
-    initPractice();
-  }
+  if (tabId === 'vocab') renderVocab();
+  if (tabId === 'write') initWriteTab();
+  if (tabId === 'read') renderStories();
+  if (tabId === 'practice') initPracticeSelect();
 }
 
-function speakText(text, rate) {
-  if ("speechSynthesis" in window) {
+function speakText(text, rate = 1.0) {
+  if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "zh-CN";
-    u.rate = rate || 1.0;
+    u.lang = 'zh-CN';
+    u.rate = rate;
     window.speechSynthesis.speak(u);
-  } else {
-    showToast("Trình duyệt không hỗ trợ đọc giọng nói");
   }
 }
 
-// --- KHO TỪ ---
-function renderVocabPills() {
-  const lessons = ["Tất cả"];
-  vocabList.forEach(item => {
-    if (item.l && lessons.indexOf(item.l) === -1) lessons.push(item.l);
-  });
-  const container = document.getElementById("lesson-pills");
-  container.innerHTML = lessons.map(l => {
-    const count = l === "Tất cả" ? vocabList.length : vocabList.filter(v => v.l === l).length;
-    const activeCls = l === currentVocabLesson ? "active" : "";
-    return '<div class="pill ' + activeCls + '" onclick="selectVocabLesson(\'' + l + '\')">' + l + ' (' + count + ')</div>';
-  }).join("");
+// --- TAB 1: KHO TỪ ---
+function renderLessonPills() {
+  const lessons = ['Tất cả', ...new Set(vocabData.map(v => v.l || 'Khác'))];
+  const container = document.getElementById('lesson-pills');
+  container.innerHTML = lessons.map(l => 
+    `<button class="pill ${currentLesson === l ? 'active' : ''}" onclick="selectLesson('${l}')">${l}</button>`
+  ).join('');
 }
 
-function selectVocabLesson(l) {
-  currentVocabLesson = l;
-  renderVocabPills();
+function selectLesson(l) {
+  currentLesson = l;
   renderVocab();
 }
 
 function renderVocab() {
-  const q = document.getElementById("search-input").value.toLowerCase().trim();
-  const filtered = vocabList.filter(v => {
-    const matchLesson = currentVocabLesson === "Tất cả" || v.l === currentVocabLesson;
-    const matchText = !q || v.h.toLowerCase().includes(q) || v.p.toLowerCase().includes(q) || v.m.toLowerCase().includes(q);
-    return matchLesson && matchText;
-  });
-  document.getElementById("vocab-count").textContent = "Hiển thị: " + filtered.length + " / " + vocabList.length + " từ";
-  const listEl = document.getElementById("vocab-list");
-  if (filtered.length === 0) {
-    listEl.innerHTML = '<div class="card" style="text-align:center; color:#6b7280;">Không tìm thấy từ vựng phù hợp.</div>';
-    return;
-  }
-  listEl.innerHTML = filtered.map((v, idx) => {
-    const safeH = v.h.replace(/'/g, "\\'");
-    return '<div class="vocab-item">' +
-      '<div>' +
-        '<div class="vocab-hanzi">' + v.h + '</div>' +
-        '<div class="vocab-pinyin">' + v.p + '</div>' +
-        '<div class="vocab-meaning">' + v.m + '</div>' +
-        '<span class="vocab-tag">' + (v.l || "Chung") + ' • ' + (v.c || "Từ vựng") + '</span>' +
-      '</div>' +
-      '<div class="audio-btns">' +
-        '<button class="icon-btn" onclick="speakText(\'' + safeH + '\', 1.0)" title="Đọc chuẩn">🔊</button>' +
-        '<button class="icon-btn" onclick="speakText(\'' + safeH + '\', 0.65)" title="Đọc chậm">🐢</button>' +
-      '</div>' +
-    '</div>';
-  }).join("");
-}
-
-function resetDefaultData() {
-  if (confirm("Khôi phục lại 40 từ chuẩn và 4 bài đọc mặc định?")) {
-    vocabList = JSON.parse(JSON.stringify(DEFAULT_VOCAB));
-    storyList = JSON.parse(JSON.stringify(DEFAULT_STORIES));
-    localStorage.setItem("cn_vocab_v23", JSON.stringify(vocabList));
-    localStorage.setItem("cn_stories_v23", JSON.stringify(storyList));
-    renderVocabPills();
-    renderVocab();
-    renderStoryPills();
-    renderStories();
-    showToast("Đã khôi phục dữ liệu chuẩn!");
-  }
-}
-
-// --- BÀI ĐỌC ---
-function renderStoryPills() {
-  const lessons = ["Tất cả"];
-  storyList.forEach(s => {
-    if (s.lesson && lessons.indexOf(s.lesson) === -1) lessons.push(s.lesson);
-  });
-  const container = document.getElementById("story-pills");
-  container.innerHTML = lessons.map(l => {
-    const activeCls = l === currentStoryLesson ? "active" : "";
-    return '<div class="pill ' + activeCls + '" onclick="selectStoryLesson(\'' + l + '\')">' + l + '</div>';
-  }).join("");
-}
-
-function selectStoryLesson(l) {
-  currentStoryLesson = l;
-  renderStoryPills();
-  renderStories();
-}
-
-function renderStories() {
-  const q = document.getElementById("story-search").value.toLowerCase().trim();
-  const filtered = storyList.filter(s => {
-    const matchL = currentStoryLesson === "Tất cả" || s.lesson === currentStoryLesson;
-    const matchQ = !q || s.title.toLowerCase().includes(q) || s.lines.some(ln => ln.h.includes(q) || ln.v.toLowerCase().includes(q));
+  renderLessonPills();
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = vocabData.filter(v => {
+    const matchL = currentLesson === 'Tất cả' || (v.l || 'Khác') === currentLesson;
+    const matchQ = v.h.toLowerCase().includes(q) || (v.hv && v.hv.toLowerCase().includes(q)) || v.p.toLowerCase().includes(q) || v.m.toLowerCase().includes(q);
     return matchL && matchQ;
   });
-  const container = document.getElementById("story-list");
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="card" style="text-align:center; color:#6b7280;">Chưa có bài đọc nào trong mục này.</div>';
+  document.getElementById('vocab-count').innerText = `Hiển thị: ${filtered.length} từ`;
+  const list = document.getElementById('vocab-list');
+  list.innerHTML = filtered.map((v, idx) => {
+    const hvDisplay = v.hv ? ` <span class="hv-tag">(${v.hv})</span>` : '';
+    return `
+      <div class="vocab-item">
+        <div>
+          <div class="hanzi-line">${v.h}${hvDisplay}</div>
+          <div class="pinyin-line">${v.p}</div>
+          <div class="meaning-line">${v.m}</div>
+          <div><span class="badge">${v.l || 'Chung'}</span><span class="badge">${v.c || 'Từ vựng'}</span></div>
+        </div>
+        <div class="actions">
+          <button class="icon-btn" onclick="speakText('${v.h}', 1.0)">🔊</button>
+          <button class="icon-btn" onclick="jumpToWrite('${v.h}')">✍️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// --- TAB 2: TẬP VIẾT HÁN TỰ ---
+function initWriteTab() {
+  const lessons = ['Tất cả', ...new Set(vocabData.map(v => v.l || 'Khác'))];
+  const sel = document.getElementById('write-lesson-select');
+  const prev = sel.value;
+  sel.innerHTML = lessons.map(l => `<option value="${l}">${l}</option>`).join('');
+  if (lessons.includes(prev)) sel.value = prev;
+  loadWriteLesson();
+}
+
+function loadWriteLesson() {
+  const l = document.getElementById('write-lesson-select').value;
+  writeWordList = vocabData.filter(v => l === 'Tất cả' || (v.l || 'Khác') === l);
+  if (writeWordList.length === 0) writeWordList = DEFAULT_VOCAB;
+  currentWriteIdx = 0;
+  renderWriteWord(writeWordList[0]);
+}
+
+function jumpToWrite(hanzi) {
+  const found = vocabData.find(v => v.h === hanzi);
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#main-nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-write').classList.add('active');
+  document.querySelectorAll('#main-nav button')[1].classList.add('active');
+  renderWriteWord(found || { h: hanzi, hv: '', p: '', m: 'Từ tập viết' });
+}
+
+function setCustomWriteWord() {
+  const val = document.getElementById('custom-write-input').value.trim();
+  if (!val) return;
+  const found = vocabData.find(v => v.h === val);
+  renderWriteWord(found || { h: val, hv: HV_DICT[val] || '', p: '', m: 'Từ nhập thủ công' });
+}
+
+function renderWriteWord(wordObj) {
+  const hvStr = wordObj.hv ? ` (${wordObj.hv})` : '';
+  document.getElementById('write-word-title').innerText = `${wordObj.h}${hvStr}`;
+  document.getElementById('write-word-sub').innerText = `${wordObj.p ? wordObj.p + ' — ' : ''}${wordObj.m}`;
+  
+  // Lọc chỉ lấy ký tự Hán tự
+  const chars = [...wordObj.h].filter(ch => /[一-龥]/.test(ch));
+  const selector = document.getElementById('char-selector');
+  if (chars.length === 0) {
+    selector.innerHTML = '<span style="color:red;font-size:13px;">Không có chữ Hán hợp lệ</span>';
     return;
   }
-  container.innerHTML = filtered.map(s => {
-    const fullHanzi = s.lines.map(ln => ln.h).join(" ");
-    const safeFull = fullHanzi.replace(/'/g, "\\'");
-    const linesHtml = s.lines.map(ln => {
-      const safeLine = ln.h.replace(/'/g, "\\'");
-      return '<div class="sentence-block">' +
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
-          '<div class="s-hanzi">' + ln.h + '</div>' +
-          '<button class="icon-btn" style="width:30px; height:30px; flex-shrink:0;" onclick="speakText(\'' + safeLine + '\', 0.95)">🔊</button>' +
-        '</div>' +
-        '<div class="s-pinyin">' + ln.p + '</div>' +
-        '<div class="s-vi">' + ln.v + '</div>' +
-      '</div>';
-    }).join("");
-
-    return '<div class="story-card">' +
-      '<div class="story-header" onclick="toggleStory(' + s.id + ')">' +
-        '<div>' +
-          '<div class="story-title">' + s.title + '</div>' +
-          '<div class="story-meta">' + s.lesson + ' • ' + s.lines.length + ' câu thoại (Chạm để mở/đóng)</div>' +
-        '</div>' +
-        '<span id="arrow-' + s.id + '" style="font-size:16px; color:#6b7280;">▼</span>' +
-      '</div>' +
-      '<div id="story-body-' + s.id + '" class="story-body">' +
-        linesHtml +
-        '<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">' +
-          '<button class="btn btn-sm btn-primary" style="flex:1;" onclick="speakText(\'' + safeFull + '\', 0.9)">🔊 Nghe cả bài</button>' +
-          '<button class="btn btn-sm btn-gray" style="flex:1;" onclick="copyStoryHanzi(' + s.id + ')">📋 Copy chữ Hán</button>' +
-          '<a href="https://ttsmp3.com/" target="_blank" class="btn btn-sm btn-blue" style="flex:1; text-decoration:none;">🌐 Tạo MP3</a>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join("");
+  selector.innerHTML = chars.map((ch, i) => 
+    `<button class="char-chip ${i === 0 ? 'active' : ''}" onclick="selectCharToWrite('${ch}', this)">${ch}</button>`
+  ).join('');
+  selectCharToWrite(chars[0], selector.children[0]);
 }
 
-function toggleStory(id) {
-  const body = document.getElementById("story-body-" + id);
-  const arrow = document.getElementById("arrow-" + id);
-  if (body.classList.contains("open")) {
-    body.classList.remove("open");
-    arrow.textContent = "▼";
-  } else {
-    body.classList.add("open");
-    arrow.textContent = "▲";
+function selectCharToWrite(char, btnEl) {
+  document.querySelectorAll('.char-chip').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  document.getElementById('quiz-status').innerText = '';
+  const target = document.getElementById('character-target-div');
+  target.innerHTML = '';
+  
+  if (typeof HanziWriter === 'undefined') {
+    target.innerHTML = '<div style="padding:20px;text-align:center;font-size:13px;color:#c62828;">Cần kết nối internet lần đầu để tải thư viện hướng dẫn nét chữ!</div>';
+    return;
+  }
+  writerInstance = HanziWriter.create('character-target-div', char, {
+    width: 256,
+    height: 256,
+    padding: 15,
+    showOutline: true,
+    strokeAnimationSpeed: 1,
+    delayBetweenStrokes: 250,
+    strokeColor: '#c62828',
+    outlineColor: '#e0e0e0',
+    drawingColor: '#1565c0',
+    drawingWidth: 16
+  });
+  writerInstance.animateCharacter();
+}
+
+function animateStroke() {
+  if (writerInstance) {
+    document.getElementById('quiz-status').innerText = 'Đang chạy mẫu thứ tự nét...';
+    writerInstance.animateCharacter({
+      onComplete: () => { document.getElementById('quiz-status').innerText = 'Bấm "Tự viết kiểm tra" để dùng tay viết thử!'; }
+    });
   }
 }
 
-function toggleAllStories(openState) {
-  document.querySelectorAll(".story-body").forEach(el => {
-    if (openState) el.classList.add("open");
-    else el.classList.remove("open");
-  });
-  document.querySelectorAll("[id^='arrow-']").forEach(el => {
-    el.textContent = openState ? "▲" : "▼";
-  });
-}
-
-function copyStoryHanzi(id) {
-  const story = storyList.find(s => s.id === id);
-  if (!story) return;
-  const text = story.lines.map(ln => ln.h).join("\n");
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast("Đã copy chữ Hán! Bấm Tạo MP3 để dán."));
-  } else {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-    showToast("Đã copy chữ Hán!");
+function startQuiz() {
+  if (writerInstance) {
+    document.getElementById('quiz-status').innerText = '✍️ Dùng ngón tay viết theo nét mờ trong ô vuông!';
+    writerInstance.quiz({
+      onMistake: function(strokeData) {
+        document.getElementById('quiz-status').innerText = '⚠️ Sai nét rồi, thử lại nét này nhé!';
+      },
+      onCorrectStroke: function(strokeData) {
+        document.getElementById('quiz-status').innerText = `✅ Chuẩn! Còn ${strokeData.strokesRemaining} nét nữa.`;
+      },
+      onComplete: function(summaryData) {
+        document.getElementById('quiz-status').innerText = `🎉 Hoàn thành xuất sắc! (Lỗi: ${summaryData.totalMistakes})`;
+        showToast('Viết chuẩn rồi!');
+      }
+    });
   }
 }
 
-// --- THÊM MỚI ---
-function addBulkVocab() {
-  const raw = document.getElementById("bulk-vocab").value.trim();
-  if (!raw) { showToast("Vui lòng nhập nội dung từ vựng!"); return; }
-  const lines = raw.split(/\r?\n/);
-  let added = 0;
-  lines.forEach(line => {
-    const parts = line.split("|").map(x => x.trim());
-    if (parts.length >= 3 && parts[0]) {
-      vocabList.unshift({
-        h: parts[0],
-        p: parts[1] || "",
-        m: parts[2] || "",
-        c: parts[3] || "Từ vựng mới",
-        l: parts[4] || "Bài mới"
-      });
-      added++;
-    }
-  });
-  if (added > 0) {
-    localStorage.setItem("cn_vocab_v23", JSON.stringify(vocabList));
-    document.getElementById("bulk-vocab").value = "";
-    renderVocabPills();
-    renderVocab();
-    showToast("Đã thêm thành công " + added + " từ!");
-  } else {
-    showToast("Sai định dạng! Hãy dùng dấu | ngăn cách.");
-  }
+function speakCurrentWriteWord() {
+  const title = document.getElementById('write-word-title').innerText.split(' (')[0];
+  speakText(title, 0.9);
 }
 
-function addNewStory() {
-  const title = document.getElementById("new-story-title").value.trim();
-  const lesson = document.getElementById("new-story-lesson").value.trim() || "Bài mới";
-  const raw = document.getElementById("new-story-content").value.trim();
-  if (!title || !raw) { showToast("Vui lòng nhập đủ tiêu đề và nội dung!"); return; }
-  const lines = [];
-  raw.split(/\r?\n/).forEach(line => {
-    const parts = line.split("|").map(x => x.trim());
-    if (parts.length >= 3 && parts[0]) {
-      lines.push({ h: parts[0], p: parts[1], v: parts[2] });
-    }
-  });
-  if (lines.length === 0) { showToast("Nội dung sai định dạng 3 cột!"); return; }
-  storyList.unshift({
-    id: Date.now(),
-    title: title,
-    lesson: lesson,
-    lines: lines
-  });
-  localStorage.setItem("cn_stories_v23", JSON.stringify(storyList));
-  document.getElementById("new-story-title").value = "";
-  document.getElementById("new-story-content").value = "";
-  renderStoryPills();
-  renderStories();
-  showToast("Đã lưu bài đọc mới!");
+function nextWriteWord() {
+  if (writeWordList.length === 0) return;
+  currentWriteIdx = (currentWriteIdx + 1) % writeWordList.length;
+  renderWriteWord(writeWordList[currentWriteIdx]);
 }
 
-// --- LUYỆN TẬP ---
-function updatePracticeSelect() {
-  const lessons = ["Tất cả"];
-  vocabList.forEach(v => { if (v.l && lessons.indexOf(v.l) === -1) lessons.push(v.l); });
-  const sel = document.getElementById("practice-lesson");
-  const cur = sel.value;
-  sel.innerHTML = lessons.map(l => '<option value="' + l + '">' + l + '</option>').join("");
-  if (lessons.indexOf(cur) !== -1) sel.value = cur;
+// --- TAB 3: BÀI ĐỌC ---
+function renderStories() {
+  const lessons = ['Tất cả', ...new Set(storyData.map(s => s.lesson || 'Chung'))];
+  document.getElementById('read-pills').innerHTML = lessons.map(l => 
+    `<button class="pill ${currentReadLesson === l ? 'active' : ''}" onclick="currentReadLesson='${l}';renderStories()">${l}</button>`
+  ).join('');
+  
+  const filtered = storyData.filter(s => currentReadLesson === 'Tất cả' || (s.lesson || 'Chung') === currentReadLesson);
+  document.getElementById('story-list').innerHTML = filtered.map((s, idx) => `
+    <div class="story-card">
+      <div class="story-header" onclick="toggleStory(${idx})">
+        <span>${s.title} <span class="badge">${s.lesson}</span></span>
+        <span>▼</span>
+      </div>
+      <div class="story-body" id="story-body-${idx}">
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <button class="btn btn-blue btn-sm" onclick="copyStoryHanzi(${idx})">📋 Copy chữ Hán</button>
+          <a href="https://ttsmp3.com" target="_blank" class="btn btn-green btn-sm" style="text-decoration:none;">🌐 Tạo MP3</a>
+        </div>
+        ${s.lines.map(line => `
+          <div class="sentence-block">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div class="s-hanzi">${line.h}</div>
+              <button class="icon-btn" onclick="speakText('${line.h}', 0.9)">🔊</button>
+            </div>
+            <div class="s-pinyin">${line.p}</div>
+            <div class="s-vi">${line.v}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
 }
 
-function setPracticeMode(mode) {
-  practiceMode = mode;
-  document.getElementById("mode-fc-btn").className = mode === "fc" ? "btn btn-sm btn-primary" : "btn btn-sm btn-gray";
-  document.getElementById("mode-listen-btn").className = mode === "listen" ? "btn btn-sm btn-primary" : "btn btn-sm btn-gray";
+function toggleStory(idx) {
+  document.getElementById('story-body-' + idx).classList.toggle('open');
+}
+
+function toggleAllStories(open) {
+  document.querySelectorAll('.story-body').forEach(el => open ? el.classList.add('open') : el.classList.remove('open'));
+}
+
+function copyStoryHanzi(idx) {
+  const filtered = storyData.filter(s => currentReadLesson === 'Tất cả' || (s.lesson || 'Chung') === currentReadLesson);
+  const text = filtered[idx].lines.map(l => l.h).join(' ');
+  navigator.clipboard.writeText(text).then(() => showToast('Đã copy chữ Hán! Dán vào ttsmp3 để tải MP3.'));
+}
+
+// --- TAB 4: LUYỆN TẬP ---
+function initPracticeSelect() {
+  const lessons = ['Tất cả', ...new Set(vocabData.map(v => v.l || 'Khác'))];
+  document.getElementById('practice-lesson').innerHTML = lessons.map(l => `<option value="${l}">${l}</option>`).join('');
   initPractice();
 }
 
 function initPractice() {
-  const l = document.getElementById("practice-lesson").value || "Tất cả";
-  practicePool = l === "Tất cả" ? [...vocabList] : vocabList.filter(v => v.l === l);
-  practicePool.sort(() => Math.random() - 0.5);
+  const l = document.getElementById('practice-lesson').value;
+  practiceList = vocabData.filter(v => l === 'Tất cả' || (v.l || 'Khác') === l);
   practiceIdx = 0;
-  fcFlipped = false;
-  renderPracticeCard();
+  showCard();
 }
 
-function renderPracticeCard() {
-  const area = document.getElementById("practice-area");
-  if (practicePool.length === 0) {
-    area.innerHTML = '<div class="card" style="text-align:center;">Không có từ vựng để luyện tập.</div>';
-    return;
-  }
-  const item = practicePool[practiceIdx];
-  const safeH = item.h.replace(/'/g, "\\'");
-
-  if (practiceMode === "fc") {
-    const inner = !fcFlipped
-      ? '<div class="fc-hanzi">' + item.h + '</div><div style="font-size:13px; color:#9ca3af;">(Chạm vào thẻ để xem đáp án)</div>'
-      : '<div class="fc-hanzi">' + item.h + '</div><div class="fc-pinyin">' + item.p + '</div><div class="fc-meaning">' + item.m + '</div>';
-    area.innerHTML = '<div style="text-align:center; font-size:13px; color:#6b7280;">Thẻ ' + (practiceIdx + 1) + ' / ' + practicePool.length + '</div>' +
-      '<div class="flashcard" onclick="flipCard()">' + inner + '</div>' +
-      '<div style="display:flex; gap:8px;">' +
-        '<button class="btn btn-gray" style="flex:1;" onclick="speakText(\'' + safeH + '\', 0.95)">🔊 Nghe phát âm</button>' +
-        '<button class="btn btn-primary" style="flex:1;" onclick="nextPracticeCard()">Tiếp theo ⏭</button>' +
-      '</div>';
-  } else {
-    if (practiceIdx === 0 && !fcFlipped) setTimeout(() => speakText(item.h, 0.95), 200);
-    const ansHtml = !fcFlipped
-      ? '<div style="font-size:42px; margin-bottom:10px;">🎧</div><div style="font-size:15px; font-weight:600; color:#374151;">Nghe âm thanh và đoán nghĩa</div><div style="font-size:12px; color:#9ca3af; margin-top:6px;">(Chạm vào thẻ để kiểm tra đáp án)</div>'
-      : '<div class="fc-hanzi">' + item.h + '</div><div class="fc-pinyin">' + item.p + '</div><div class="fc-meaning">' + item.m + '</div>';
-    area.innerHTML = '<div style="text-align:center; font-size:13px; color:#6b7280;">Câu ' + (practiceIdx + 1) + ' / ' + practicePool.length + '</div>' +
-      '<div class="flashcard" onclick="flipCard()">' + ansHtml + '</div>' +
-      '<div style="display:flex; gap:8px;">' +
-        '<button class="btn btn-blue" style="flex:1;" onclick="speakText(\'' + safeH + '\', 0.95)">🔊 Nghe lại</button>' +
-        '<button class="btn btn-primary" style="flex:1;" onclick="nextPracticeCard()">Câu tiếp ⏭</button>' +
-      '</div>';
-  }
+function showCard() {
+  if (practiceList.length === 0) return;
+  const item = practiceList[practiceIdx];
+  document.getElementById('fc-front').style.display = 'block';
+  document.getElementById('fc-back').style.display = 'none';
+  document.getElementById('fc-hanzi').innerText = item.h;
+  document.getElementById('fc-hv').innerText = item.hv ? `(${item.hv})` : '';
+  document.getElementById('fc-pinyin').innerText = item.p;
+  document.getElementById('fc-meaning').innerText = item.m;
 }
 
 function flipCard() {
-  fcFlipped = !fcFlipped;
-  if (fcFlipped) {
-    const item = practicePool[practiceIdx];
-    speakText(item.h, 0.95);
-  }
-  renderPracticeCard();
-}
-
-function nextPracticeCard() {
-  practiceIdx = (practiceIdx + 1) % practicePool.length;
-  fcFlipped = false;
-  renderPracticeCard();
-  if (practiceMode === "listen") {
-    speakText(practicePool[practiceIdx].h, 0.95);
+  const f = document.getElementById('fc-front');
+  const b = document.getElementById('fc-back');
+  if (f.style.display !== 'none') {
+    f.style.display = 'none';
+    b.style.display = 'block';
+    speakPractice();
+  } else {
+    f.style.display = 'block';
+    b.style.display = 'none';
   }
 }
 
-// --- SAO LƯU ---
-function exportData() {
-  const data = { vocab: vocabList, stories: storyList, date: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "SoTayTiengTrung_Backup.json";
+function speakPractice() {
+  if (practiceList[practiceIdx]) speakText(practiceList[practiceIdx].h, 0.95);
+}
+
+function nextCard() {
+  if (practiceList.length === 0) return;
+  practiceIdx = (practiceIdx + 1) % practiceList.length;
+  showCard();
+}
+
+// --- TAB 5: THÊM MỚI ---
+function importBulkVocab() {
+  const raw = document.getElementById('bulk-vocab').value.trim();
+  if (!raw) return;
+  const lines = raw.split('\n');
+  let count = 0;
+  lines.forEach(line => {
+    const parts = line.split('|').map(s => s.trim());
+    if (parts.length >= 4) {
+      if (parts.length >= 6) {
+        vocabData.unshift({ h: parts[0], hv: parts[1].toUpperCase(), p: parts[2], m: parts[3], c: parts[4], l: parts[5] });
+      } else {
+        vocabData.unshift({ h: parts[0], hv: HV_DICT[parts[0]] || '', p: parts[1], m: parts[2], c: parts[3], l: parts[4] || 'Bài mới' });
+      }
+      count++;
+    }
+  });
+  saveData();
+  document.getElementById('bulk-vocab').value = '';
+  showToast(`Đã thêm ${count} từ mới!`);
+}
+
+function addStory() {
+  const title = document.getElementById('new-story-title').value.trim();
+  const lesson = document.getElementById('new-story-lesson').value.trim() || 'Bài mới';
+  const raw = document.getElementById('new-story-body').value.trim();
+  if (!title || !raw) return;
+  const lines = raw.split('\n').map(l => {
+    const p = l.split('|').map(s => s.trim());
+    return p.length >= 3 ? { h: p[0], p: p[1], v: p[2] } : null;
+  }).filter(Boolean);
+  if (lines.length > 0) {
+    storyData.unshift({ title, lesson, lines });
+    saveData();
+    document.getElementById('new-story-title').value = '';
+    document.getElementById('new-story-body').value = '';
+    showToast('Đã lưu bài đọc mới!');
+  }
+}
+
+// --- TAB 6: SAO LƯU & KHÔI PHỤC ---
+function exportBackup() {
+  const data = { vocab: vocabData, stories: storyData, version: 'v25' };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'SoTayTiengTrung_v25_Backup.json';
   a.click();
-  URL.revokeObjectURL(url);
-  showToast("Đã tải file sao lưu!");
 }
 
-function importData(event) {
+function importBackup(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
-      const data = JSON.parse(e.target.result);
-      if (data.vocab) {
-        vocabList = data.vocab;
-        localStorage.setItem("cn_vocab_v23", JSON.stringify(vocabList));
-      }
-      if (data.stories) {
-        storyList = data.stories;
-        localStorage.setItem("cn_stories_v23", JSON.stringify(storyList));
-      }
-      renderVocabPills();
+      const parsed = JSON.parse(e.target.result);
+      let importedVocab = parsed.vocab || parsed.vocabData || (Array.isArray(parsed) ? parsed : []);
+      let importedStories = parsed.stories || parsed.storyData || storyData;
+      
+      // Chuẩn hóa và tự động điền âm Hán Việt nếu file backup v24 chưa có
+      vocabData = importedVocab.map(item => {
+        const cleanH = (item.h || '').replace(/[.。…]/g, '');
+        return {
+          h: item.h || '',
+          hv: item.hv || HV_DICT[cleanH] || '',
+          p: item.p || '',
+          m: item.m || '',
+          c: item.c || 'Chung',
+          l: item.l || 'Bài cũ'
+        };
+      });
+      storyData = importedStories;
+      saveData();
       renderVocab();
-      renderStoryPills();
-      renderStories();
-      showToast("Khôi phục dữ liệu thành công!");
+      showToast(`Đã khôi phục ${vocabData.length} từ & ${storyData.length} bài đọc!`);
     } catch (err) {
-      showToast("Tệp sao lưu không hợp lệ!");
+      alert('Tệp sao lưu không đúng định dạng JSON!');
     }
   };
   reader.readAsText(file);
 }
 
-window.onload = initApp;
+function resetDefaultData() {
+  if (confirm('Khôi phục lại 30 từ và 2 bài đọc mặc định ban đầu?')) {
+    vocabData = DEFAULT_VOCAB;
+    storyData = DEFAULT_STORIES;
+    saveData();
+    renderVocab();
+    showToast('Đã khôi phục dữ liệu mặc định!');
+  }
+}
+
+renderVocab();
 </script>
 </body>
 </html>
